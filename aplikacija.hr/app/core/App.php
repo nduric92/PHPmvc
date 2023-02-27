@@ -4,7 +4,6 @@ class App{
     // Ova metoda ima zadatak saznati što želiš i to pokrenuti
     public static function start()
     {
-
         $route = Request::getRoute();
 
         $parts = explode('/',substr($route,1));
@@ -38,9 +37,9 @@ class App{
     }
 
 
-    public static function config($kljuc)
+    public static function config($key)
     {
-        $configFile = BP_APP . 'konfiguracija.php';
+        $configFile = BP_APP . 'configuration.php';
 
         if(!file_exists($configFile)){
             return 'Konfiguracijska datoteka ne postoji';
@@ -48,11 +47,10 @@ class App{
 
         $config = require $configFile;
 
-        if(!isset($config[$kljuc])){
-            return 'Kljuc ' . $kljuc . ' nije postavljen u konfiguraciji';
+        if(!isset($config[$key])){
+            return 'Kljuc ' . $key . ' nije postavljen u konfiguraciji';
         }
-
-        return $config[$kljuc];
+        return $config[$key];
 
     }
 

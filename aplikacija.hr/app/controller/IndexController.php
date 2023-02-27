@@ -1,17 +1,21 @@
 <?php
 
-class IndexController
+class IndexController extends Controller
 {
     public function index()
     {
-        $view = new View();
-        $view->render('index');
+        $this->view->render('index');
     }
 
     public function route1()
     {
         $view = new View();
-        $view->render('example1');
+        $view->render('example1d');
+    }
+
+    public function contact()
+    {
+        $this->view->render('contact');
     }
 
 }
