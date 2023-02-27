@@ -10,7 +10,7 @@ class IndexController extends Controller
     public function route1()
     {
         $view = new View();
-        $view->render('example1d');
+        $view->render('example1d');//ucitava errorViewFile.phtml
     }
 
     public function contact()
