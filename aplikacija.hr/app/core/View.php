@@ -18,8 +18,7 @@ class View
         if(file_exists($viewFile))
         {
             include_once $viewFile;
-        }else
-        {
+        }else{
             include_once BP_APP . 'view' . DIRECTORY_SEPARATOR . 
             'errorViewFile.phtml';
         }
