@@ -1,16 +1,22 @@
 <?php
 
-class Request{
-
+class Request
+{
     public static function getRoute()
     {
         $route='';
-        if(isset($_SERVER['REDIRECT_PATH_INFO'])){
+        if(isset($_SERVER['REDIRECT_PATH_INFO']))
+        {
             $route = $_SERVER['REDIRECT_PATH_INFO'];
-        } else if (isset($_SERVER['REQUEST_URI'])){
+        }elseif (isset($_SERVER['REQUEST_URI']))
+        {
             $route = $_SERVER['REQUEST_URI'];
+        }
+
+        if(strpos($route,'?')>=0){
+            $route=explode('?',$route)[0];
         }
         return $route;
     }
-
+    
 }

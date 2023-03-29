@@ -3,19 +3,21 @@
 <head>
     <?php include_once 'includes/head.phtml'; ?>
 </head>
-<body style="background-color: black;">
-    <div class="container" >
-        <div class="container text-center" style="background-color:darkgrey; min-height:450px;">
+    <body style="background-color: black;">
+        <div class="container">
+            <img src="<?=App::config('url')?>public/img/pp.jpg" style="height: 300px; width:100%;" alt="...">
             <?php include_once 'includes/navbar.phtml'; ?>
-            <h1>naslov u predlosku - zajednicki deo stranice</h1>
+                <div class="container text-center" style="background-color:darkgrey; min-height:500px;">
 
-            <?php echo $content; ?>
+                <br>
 
-            <hr><br>
-                        
+                <?php echo $content; ?>
+
+                <br>
+                            
+                </div>
+            <?php include_once 'includes/footer.phtml'; ?>
         </div>
-        <?php include_once 'includes/footer.phtml'; ?>
-    </div>
-    <?php include_once 'includes/scripts.phtml'; ?>
-</body>
+        <?php include_once 'includes/scripts.phtml'; ?>
+    </body>
 </html>

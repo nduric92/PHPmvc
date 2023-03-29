@@ -1,0 +1,34 @@
+.bi.bi-trash3-fill{
+    font-size: 20px;
+    color: red;
+}
+
+.bi.bi-pencil-square{
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+thead > tr > th{
+    font-size: 20px;
+}
+
+thead > tr > th:nth-child(1),
+thead > tr > th:nth-child(2){
+    text-align: left;
+}
+
+tbody > tr > td:nth-child(1),
+tbody > tr > td:nth-child(2){
+    font-weight: bold;
+    text-align: left;
+}
+
+.card-body{
+    margin-top: 20px;
+}
+
+.col-lg-3{
+    margin-top: 10px;
+}
+
+

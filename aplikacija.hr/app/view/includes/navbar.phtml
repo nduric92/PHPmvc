@@ -7,17 +7,75 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="<?=App::config('url');?>index/contact">Kontakt</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?=App::config('url');?>index/onama">O nama</a>
-                </li>
+                    
+
+                    <?php if(App::auth()): ?>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?=App::config('url');?>dashboard/index">Overview</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Production
+                            </a>
+                            <ul class="dropdown-menu">
+                            <li class="nav-item">                                
+                                <a class="nav-link" href="<?=App::config('url');?>product/index">Products</a>
+                            </li>
+                            <li class="nav-item">                                
+                                <a class="nav-link" href="<?=App::config('url');?>cycle/index">Cycle</a>
+                            </li>
+                            </ul>
+                        </li>
+                        
+                        <?php if(App::admin()): ?>
+                            
+                            
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Production details
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="<?=App::config('url');?>shift/index">Shifts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="<?=App::config('url');?>workershift/index">Employees on Shifts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="<?=App::config('url');?>worker/index">Employees</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?=App::config('url');?>operator/index">Operators</a>
+                            </li>
+
+
+                            <?php else: ?>
+                            <li>                                
+                                <!--ovo ADMIN ne vidi-->
+                            </li>
+
+                        <?php endif; ?>
+                    <?php else: ?><!--ovo se vidi samo bez logina-->
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?=App::config('url');?>index/aboutus">About Us</a>                    
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?=App::config('url');?>index/contact">Contact</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>                      
         </div>        
     </nav>                   
         <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-right: 20px;">
-            <a href="<?=App::config('url');?>index/prijava"><button type="button" class="btn btn-secondary btn-md">LogIn</button></a>
+            
+        <?php if(!App::auth()): ?>
+            <a href="<?=App::config('url');?>index/login"><button type="button" class="btn btn-secondary btn-md">LogIn</button></a>
+            <?php else: ?>
+                <a href="<?=App::config('url') ;?>index/logout"><button type="button" class="btn btn-secondary btn-md">LogOut <?php echo App::operator()?></button></a>
+                <?php endif; ?>
         </div>         
 </nav>

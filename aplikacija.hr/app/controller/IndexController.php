@@ -7,15 +7,32 @@ class IndexController extends Controller
         $this->view->render('index');
     }
 
-    public function route1()
-    {
-        $view = new View();
-        $view->render('example1d');//ucitava errorViewFile.phtml
-    }
-
     public function contact()
     {
         $this->view->render('contact');
     }
+
+    public function aboutus()
+    {
+        $this->view->render('aboutus');
+    }
+
+    public function login()
+    {
+        $this->view->render('login',[
+            'message'=>'',
+            'email'=>''
+        ]);
+    }
+
+    public function logout()
+    {
+        unset($_SESSION['auth']);
+        session_destroy();
+        header('location:' . App::config('url'));
+    }
+
+
+
 
 }

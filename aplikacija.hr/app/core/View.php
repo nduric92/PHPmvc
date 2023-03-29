@@ -19,10 +19,9 @@ class View
         {
             include_once $viewFile;
         }else{
-            include_once BP_APP . 'view' . DIRECTORY_SEPARATOR . 
-            'errorViewFile.phtml';
+            include_once BP_APP . 'view' . DIRECTORY_SEPARATOR . 'errorViewFile.phtml';
         }
-        $content=ob_get_clean();
+        $content = ob_get_clean();
         include_once BP_APP . 'view' . DIRECTORY_SEPARATOR . 
         $this->template . '.phtml';
     }
