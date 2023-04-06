@@ -35,6 +35,8 @@ class Cycle{
         $conection = DB::getInstance();
         $expression = $conection->prepare('
         
+       
+
         select  wsp.id,
                 a.name,
                 a.surname,
@@ -46,14 +48,29 @@ class Cycle{
         inner join shift b on b.id = ws.shift
         inner join cycle wsp on ws.id =wsp.worker_shift 
         left join product c on wsp.product = c.id
-        where wsp.id=:id
-        order by date desc;
+        where wsp.id=:id;
         
         ');
         $expression->execute([
             'id'=>$id
         ]);
         return $expression->fetch();
+    }
+
+    public static function create($parameters)
+    {
+        $conection = DB::getInstance();
+        $expression = $conection->prepare('
+        
+            insert into cycle
+            (worker_shift,product,amount,
+            date) values
+            (:worker_shift,:product,:amount,
+            :date);
+        
+        ');
+        $expression->execute($parameters);
+        return $conection->lastInsertId();
     }
 
 
@@ -63,7 +80,7 @@ class Cycle{
         $expression = $conection->prepare('
         
             update cycle set
-            worker=:worker,
+            worker_shift=:worker_shift,
             product=:product,
             amount=:amount,
             date=:date

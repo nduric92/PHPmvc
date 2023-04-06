@@ -24,6 +24,104 @@ class CycleController extends AuthorizationController
     }
 
 
+
+
+
+
+
+    public function new()
+    {
+        $this->change(Cycle::create([
+            'worker_shift'=>'',
+            'product'=>'',
+            'amount'=>'',
+            'date'=>''
+        ]));
+    }
+
+
+
+
+    public function change($id='')
+    {
+        if($_SERVER['REQUEST_METHOD']==='GET'){
+            $this->change_GET($id);
+            return;
+        }
+
+
+        $this->e = (object)$_POST;
+
+        try {
+            $this->e->id=$id;
+            $this->controll();
+            $this->prepareBase();
+            Cycle::update((array)$this->e);
+            header('location:' . App::config('url') . 'cycle');
+           } catch (\Exception $th) {
+            $this->view->render($this->viewPutanja .
+            'details',[
+                'messages'=>$this->messages,
+                'e'=>$this->e
+            ]);
+           }        
+
+    }
+
+    private function change_GET($id)
+    {
+        $this->e = Cycle::readOne($id);
+       $products = [];
+       $p = new stdClass();
+       $p->id=0;
+       $p->name='Select';
+       $products[]=$p;
+       foreach(Product::read() as $product){
+        $products[]=$product;
+       }
+
+       if($this->e->date!=null){
+        $this->e->date = date('Y-m-d',strtotime($this->e->date));
+       }
+       $this->view->render($this->viewPath. 
+       'details',[
+           'e'=>$this->e,
+           'workers'=>Worker::read(),
+           'products'=>$products
+       ]); 
+    }
+
+
+
+
+
+
+
+    private function callView($parameters)
+    {
+        $this->view->render($this->viewPath . 
+       'new',$parameters);  
+    }
+
+    public function prepareView()
+    {
+        $this->e = (object)$_POST;
+    }
+
+    public function controllNew()
+    {
+        
+    }
+
+    public function prepareBase()
+    {
+
+    }
+
+
+
+
+
     private function adjustData($cycle)
     {
         foreach($cycle as $c)
