@@ -6,13 +6,13 @@ class Shift{
     {
         $conection = DB::getInstance();
         $expression = $conection->prepare('
-        select 	a.id,
+        select  a.id,
                 a.name,
                 a.duration,
-                count(b.id) as employees 
+                count(b.id) as employees
         from shift a
-        left join worker_shift b on a.id = b.shift 
-        group by 	a.id,
+        left join worker b on a.id = b.shift 
+        group by    a.id,
                     a.name,
                     a.duration 
         order by a.name asc;
@@ -76,5 +76,20 @@ class Shift{
         $expression->execute();
     }
 
+    public static function firstShift()
+    {
+        $conection = DB::getInstance();
+        $expression = $conection->prepare('
+        
+            select id from shift
+            order by id limit 1
+        
+        ');
+        $expression->execute();
+        $id=$expression->fetchColumn();
+        return $id;
+    
+    
+    }
     
 }

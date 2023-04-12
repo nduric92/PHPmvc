@@ -1,10 +1,10 @@
-drop database if exists production;
-create database production;
-use production;
+drop database if exists plast;
+create database plast;
+use plast;
 
 
 
-# c:\xampp\mysql\bin\mysql -uroot --default_character_set=utf8mb4 < C:\Users\djuki\Documents\GitHub\PHPmvc\aplikacija.hr\production.sql
+# c:\xampp\mysql\bin\mysql -uroot --default_character_set=utf8mb4 < C:\Users\djuki\Documents\GitHub\PHPmvc\aplikacija.hr\plast.sql
 
 #alter database persefona_proizvodnja charset utf8mb4;
 
@@ -29,6 +29,7 @@ create table worker(
     id int not null primary key auto_increment,
     name varchar(50) not null,
     surname varchar(50) not null,
+    shift int,
     oib char (11),
     contractnumber varchar(50),
     iban varchar(50)
@@ -37,19 +38,13 @@ create table worker(
 create table shift(
     id int not null primary key auto_increment,
     name varchar(50),
-    duration decimal(18,2)    
-);
-
-create table worker_shift(
-    id int not null primary key auto_increment,
-    worker int,
-    shift int
+    duration decimal(18,2) 
 );
 
 create table cycle(
     id int not null primary key auto_increment,
-    worker_shift int,
-    product int,
+    product int not null,
+    worker int not null,
     amount int,
     date date
 );
@@ -65,11 +60,11 @@ create table product(
 
 #poveznice izmedju tablica
 
-alter table worker_shift add foreign key (worker) references worker(id);
-alter table worker_shift add foreign key (shift) references shift(id);
+alter table worker add foreign key (shift) references shift (id);
 
-alter table cycle add foreign key (worker_shift) references worker_shift(id);
-alter table cycle add foreign key (product) references product(id);
+alter table cycle add foreign key (worker) references worker(id);
+alter table cycle add foreign key (product) references product (id);
+
 
 #inserti u tablice
 #radnik
@@ -108,33 +103,7 @@ values
 ('TobiasS'),    #2
 ('RonnyS');     #3
 
-#worker_smjena
-insert into worker_shift(worker,shift)
-values
-(1,1),
-(2,2),
-(3,1),
-(4,1),
-(5,1),
-(6,2),
-(7,2),
-(8,2),
-(9,2),
-(10,1),
-(11,1),
-(12,1),
-(13,3),
-(14,1),
-(15,3),
-(16,3),
-(17,3),
-(18,3),
-(19,2),
-(20,3),
-(21,3),
-(22,2),
-(23,3),
-(24,2);
+
 
 #proizvod
 insert into product (name,color)
@@ -188,17 +157,19 @@ values
 ('PAXTER 042','White'),
 ('PAXTER 043','Red2');
 
-#ostao insert na tablicu radnik_smjena_proizvod
-
-insert into cycle (worker_shift,product,amount,date)
+#ciklus
+insert into `cycle` 
+(product,worker,amount,date)
 values
-(1,1,40,'2022.08.14'),
-(2,2,40,'2022.08.16'),
-(5,2,40,'2022.08.10'),
-(7,4,40,'2022.09.14'),
-(5,5,40,'2022.10.14'),
-(2,8,40,'2022.11.14'),
-(12,11,40,'2022.11.15'),
-(11,10,40,'2022.11.18'),
-(21,6,40,'2022.11.20'),
-(22,3,40,'2022.12.14');
+(1,1,46,'2023.3.12'),
+(2,2,46,'2023.3.14'),
+(3,3,53,'2023.3.15'),
+(4,4,46,'2023.3.16'),
+(5,5,46,'2023.3.20'),
+(6,6,103,'2023.3.21'),
+(8,8,46,'2023.3.22'),
+(7,11,58,'2023.3.23'),
+(9,21,64,'2023.3.25'),
+(1,17,75,'2023.3.28'),
+(6,19,46,'2023.4.12'),
+(8,13,36,'2023.34.18');

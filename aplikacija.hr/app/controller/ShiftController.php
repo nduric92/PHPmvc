@@ -162,19 +162,21 @@ class ShiftController extends AdminController
         ]); 
    }
 
+
    private function controllChange()
-   {
+{
        return $this->controllName();
    }
 
-   public function delete($id=0){
-    $id=(int)$id;
-    if($id===0){
-        header('location: ' . App::config('url') . 'index/logout');
-        return;
+   public function delete($id=0)
+   {
+        $id=(int)$id;
+        if($id===0){
+            header('location: ' . App::config('url') . 'index/logout');
+            return;
+        }
+        Shift::delete($id);
+        header('location: ' . App::config('url') . 'shift/index');
     }
-    Shift::delete($id);
-    header('location: ' . App::config('url') . 'shift/index');
-}
 
 }

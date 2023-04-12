@@ -2,29 +2,76 @@
 
 class Worker{
     
-    public static function read()
+    public static function read($condition='',$page=1)
     {
+        $condition='%' . $condition . '%';
+        $brps = App::config('brps');
+        $start = ($page * $brps) - $brps;
+
         $conection = DB::getInstance();
         $expression = $conection->prepare('
-        select  a.id,
-                a.name,
-                a.surname,
-                a.oib ,
-                a.contractnumber ,
-                a.iban,
-                c.name as shift
-        from worker a
-        left join worker_shift b on a.id = b.worker 
-        left join shift c on c.id =b.shift
-        group by    a.id,
+            select 	a.id,
                     a.name,
                     a.surname,
-                    a.oib ,
-                    a.contractnumber ,
+                    a.oib,
+                    a.contractnumber,
                     a.iban,
-                    c.name
-                    order by a.name, a.surname asc;
+                    b.name as shift,
+                    count(c.id) as cycles
+            from worker a
+            left join shift b on a.shift = b.id 
+            left join cycle c on a.id = c.worker
+            where concat(a.name, \' \', a.surname, \' \', ifnull(a.oib,\'\'))
+            like :condition
+            group by 	a.id,
+                        a.name,
+                        a.surname,
+                        a.oib,
+                        a.contractnumber,
+                        a.iban,
+                        b.name
+            order by a.surname asc
+            limit :start, :brps
         ');
+
+        $expression->bindValue('start',$start,PDO::PARAM_INT);
+        $expression->bindValue('brps',$brps,PDO::PARAM_INT);
+        $expression->bindParam('condition',$condition);
+        /*$expression->execute([
+            'condition'=>$condition
+        ]);*/
+        $expression->execute();
+        return $expression->fetchAll();
+    }
+
+    public static function readf()
+    {
+
+        $conection = DB::getInstance();
+        $expression = $conection->prepare('
+            select 	a.id,
+                    a.name,
+                    a.surname,
+                    a.oib,
+                    a.contractnumber,
+                    a.iban,
+                    b.name as shift,
+                    count(c.id) as cycles
+            from worker a
+            left join shift b on a.shift = b.id 
+            left join cycle c on a.id = c.worker
+            group by 	a.id,
+                        a.name,
+                        a.surname,
+                        a.oib,
+                        a.contractnumber,
+                        a.iban,
+                        b.name
+            order by a.surname asc
+        ');
+        /*$expression->execute([
+            'condition'=>$condition
+        ]);*/
         $expression->execute();
         return $expression->fetchAll();
     }
@@ -34,23 +81,17 @@ class Worker{
         $conection = DB::getInstance();
         $expression = $conection->prepare('
         
-        select  a.id,
-                a.name,
-                a.surname,
-                a.oib ,
-                a.contractnumber ,
-                a.iban
-        from worker a
-        left join worker_shift b on a.id = b.worker
-        where a.id=:id
-        order by a.name,a.surname;
+        select * from worker
+        where id=:id
         
         
         ');
+        
         $expression->execute([
             'id'=>$id
         ]);
-        return $expression->fetch();
+        $worker=$expression->fetch();
+        return $worker;
     }
 
     public static function create($parameters)
@@ -59,12 +100,13 @@ class Worker{
         $expression = $conection->prepare('
         
             insert into worker(name,surname,oib,
-            contractnumber,iban) values
+            contractnumber,iban,shift) values
             (:name,:surname,:oib,
-            :contractnumber,:iban);
+            :contractnumber,:iban,:shift);
         
         ');
         $expression->execute($parameters);
+        return $conection->lastInsertId();
     }
 
     public static function update($parameters)
@@ -77,7 +119,8 @@ class Worker{
             surname=:surname,
             oib=:oib,
             contractnumber=:contractnumber,
-            iban=:iban
+            iban=:iban,
+            shift=:shift
             where id=:id
         ');
         $expression->execute($parameters);
@@ -89,7 +132,7 @@ class Worker{
         $expression = $conection->prepare('
         
             delete from worker
-            where id=:id
+            where id=:id;
         
         ');
         $expression->execute([
@@ -97,5 +140,44 @@ class Worker{
         ]);
         $expression->execute();
     }
+
+
+    public static function firstWorker()
+    {
+        $conection = DB::getInstance();
+        $expression = $conection->prepare('
+        
+            select id from worker
+            order by id limit 1
+        
+        ');
+        $expression->execute();
+        $id=$expression->fetchColumn();
+        return $id;
+    
+    }
+
+    public static function totalWorkers($condition='')
+    {
+
+        $condition = '%' . $condition . '%';
+        $conection = DB::getInstance();
+        $expression = $conection->prepare('
+        
+        select 	count(*)
+        from 
+        worker   
+        where concat(name, \' \', surname, \' \', 
+        ifnull(oib,\'\'))
+        like :condition;
+        
+        ');
+        $expression->execute([
+            'condition'=>$condition
+        ]);
+        return $expression->fetchColumn();
+    }
+
+    
     
 }

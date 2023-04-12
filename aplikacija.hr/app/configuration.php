@@ -9,8 +9,9 @@ if($dev)
         'formatNumber'=>'###,##0.00',
         'url'=>'http://aplikacija.hr/',
         'nameApp'=>'Production',
+        'brps'=>12,
         'base'=>[
-            'dsn'=>'mysql:host=localhost;dbname=production;charset=utf8mb4',
+            'dsn'=>'mysql:host=localhost;dbname=plast;charset=utf8mb4',
             'user'=>'root',
             'password'=>''
         ]
@@ -21,6 +22,7 @@ if($dev)
         'formatNumber'=>'###,##0.00',
         'url'=>'https://polaznik24.edunova.hr/',
         'nameApp'=>'Production',
+        'brps'=>12,
         'base'=>[
             'dsn'=>'mysql:host=localhost;dbname=persefona_proizvodnja;charset=utf8mb4',
             'user'=>'persefona_persefona',

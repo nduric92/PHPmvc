@@ -1,21 +1,17 @@
-<form action="<?php echo App::config('url') ?>cycle/change/<?=$e->id?>" 
-        method="post">
-    <div class="grid-x grid-padding-x">
-        <div class="large-6 cell">
-            <?php include_once 'basicData.phtml'?>
-        </div>
-        
-
-        
+<form action="<?php echo App::config('url') ?>worker/change/<?=$e->id?>" method="post">
+    
+    <div class="large-6 cell">
+        <?php include_once 'basicData.phtml'?>
     </div>
+    
+    
 
-
-
+    <!-- Button trigger modal -->
     <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-    Save Cycle
+    Save Employee
     </button>
 
-    <a href="<?=App::config('url')?>cycle/abort/<?=$e->id?>">
+    <a href="<?=App::config('url')?>worker/abort/<?=$e->id?>">
     <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
     Abort
     </button></a>
@@ -24,7 +20,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Save Cycle</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Save changes</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -38,5 +34,3 @@
         </div>
     </div>
 </form>
-
-

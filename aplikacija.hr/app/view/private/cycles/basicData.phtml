@@ -1,35 +1,46 @@
 
-
-
 <div class="mb-3 row" style="max-width:400px; margin: auto;">
-    <label for="shift">shift</label>
-    <select name="shift" id="shift">
-        <?php foreach($shifts as $shift): ?>
+    <label for="product">Product</label>
+    <select name="product" id="input"  class="form-select" aria-label="Default select example">
+        <?php foreach($products as $product): ?>
             <option 
-            <?php if($shift->id==$e->shift){
+            <?php if($product->id==$e->product){
                 echo ' selected="selected" ';
             } ?>
-            value="<?=$shift->id?>">
-                <?=$shift->name?>
+            value="<?=$product->id?>">
+                <?=$product->name?>
             </option>
         <?php endforeach;?>
     </select>
 </div>
 
 
-
+<div class="mb-3 row" style="max-width:400px; margin: auto;">
+    <label for="worker">Employed</label>
+    <select name="worker" id="input"  class="form-select" aria-label="Default select example">
+        <?php foreach($workers as $worker): ?>
+            <option 
+            <?php if($worker->id==$e->worker){
+                echo ' selected="selected" ';
+            } ?>
+            value="<?=$worker->id?>">
+                <?=$worker->name?> <?=$worker->surname?>
+            </option>
+        <?php endforeach;?>
+    </select>
+</div>
     
 
-    <div class="mb-3 row" style="max-width:400px; margin: auto;">
-        <label for="amount">Amount</label>
-        <input type="text" class="form-control" value="<?=$e->amount?>" name="amount" id="amount">
-    </div>
+<div class="mb-3 row" style="max-width:400px; margin: auto;">
+    <label for="amount">Amount</label>
+    <input type="text" class="form-control" value="<?=$e->amount?>" name="amount" id="amount">
+</div>
 
 
-    <div class="mb-3 row" style="max-width:400px; margin: auto;">
-        <label for="date">Date</label>
-        <input type="date" class="form-control" value="<?=$e->date?>" name="date" id="date">
-    </div>
+<div class="mb-3 row" style="max-width:400px; margin: auto;">
+    <label for="date">Date</label>
+    <input type="date" class="form-control" value="<?=$e->date?>" name="date" id="date">
+</div>
 
 
 

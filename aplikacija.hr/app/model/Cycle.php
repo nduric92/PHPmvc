@@ -2,59 +2,59 @@
 
 class Cycle{
     
-    public static function read()
+    public static function read($condition='',$page=1)
     {
+        $condition = '%' . $condition . '%';
+        $brps = App::config('brps');
+        $start = ($page * $brps) - $brps;
+
         $conection = DB::getInstance();
         $expression = $conection->prepare('
-        select  wsp.id,
-                a.name,
-                a.surname,
+        select 	a.id,
+                b.name,
+                b.surname,
                 c.name as product,
-                wsp.amount, 
-                wsp.date 
-        from worker a
-        inner join worker_shift ws on a.id = ws.worker 
-        inner join shift b on b.id = ws.shift
-        inner join cycle wsp on ws.id =wsp.worker_shift 
-        left join product c on wsp.product = c.id
-        group by 
-                wsp.id,
-                a.name,
-                a.surname, 
-                c.name,
-                wsp.amount, 
-                wsp.date
-        order by date desc;
+                a.amount,
+                a.date
+        from `cycle` a
+        inner join worker b on a.worker = b.id 
+        inner join product c on c.id = a.product 
+        where concat(b.name, \' \', b.surname, \' \', c.name)
+        like :condition
+        group by 	a.id,
+                    b.name,
+                    b.surname,
+                    c.name,
+                    a.amount,
+                    a.`date`
+        order by date desc
+        limit :start, :brps
         ');
+        $expression->bindValue('start',$start,PDO::PARAM_INT);
+        $expression->bindValue('brps',$brps,PDO::PARAM_INT);
+        $expression->bindParam('condition',$condition);
+
         $expression->execute();
         return $expression->fetchAll();
     }
+
+    
 
     public static function readOne($id)
     {
         $conection = DB::getInstance();
         $expression = $conection->prepare('
-        
-       
 
-        select  wsp.id,
-                a.name,
-                a.surname,
-                c.name as product,
-                wsp.amount, 
-                wsp.date 
-        from worker a
-        inner join worker_shift ws on a.id = ws.worker 
-        inner join shift b on b.id = ws.shift
-        inner join cycle wsp on ws.id =wsp.worker_shift 
-        left join product c on wsp.product = c.id
-        where wsp.id=:id;
+        select * from cycle
+        where id=:id
         
         ');
         $expression->execute([
             'id'=>$id
         ]);
-        return $expression->fetch();
+
+        $cycle=$expression->fetch();
+        return $cycle;
     }
 
     public static function create($parameters)
@@ -63,9 +63,10 @@ class Cycle{
         $expression = $conection->prepare('
         
             insert into cycle
-            (worker_shift,product,amount,
-            date) values
-            (:worker_shift,:product,:amount,
+            (product,worker,amount,
+            date) 
+            values
+            (:product,:worker,:amount,
             :date);
         
         ');
@@ -80,8 +81,8 @@ class Cycle{
         $expression = $conection->prepare('
         
             update cycle set
-            worker_shift=:worker_shift,
             product=:product,
+            worker=:worker,
             amount=:amount,
             date=:date
             where id=:id
@@ -89,10 +90,6 @@ class Cycle{
         ');
         $expression->execute($parameters);
     }
-    
-
-    
-
     
     
     public static function delete($id)
@@ -110,6 +107,25 @@ class Cycle{
         $expression->execute();
     }
 
-    
+    public static function totalCycles($condition='')
+    {
+
+        $condition = '%' . $condition . '%';
+        $conection = DB::getInstance();
+        $expression = $conection->prepare('
+        
+        select 	count(*)
+        from `cycle` a
+        inner join worker b on a.worker = b.id 
+        inner join product c on c.id = a.product 
+        where concat(b.name, \' \', b.surname, \' \', c.name)
+        like :condition;
+        
+        ');
+        $expression->execute([
+            'condition'=>$condition
+        ]);
+        return $expression->fetchColumn();
+    }
     
 }

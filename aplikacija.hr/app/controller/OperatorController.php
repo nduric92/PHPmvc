@@ -7,7 +7,7 @@ class OperatorController extends AdminController
     DIRECTORY_SEPARATOR . 'operators' . 
     DIRECTORY_SEPARATOR;
     private $e;//srart data
-    private $message;
+    private $message='';
 
 
     public function index()
@@ -42,9 +42,94 @@ class OperatorController extends AdminController
         ]);
     }
 
+
+
+
+    public function change($id='')
+    {
+        if($_SERVER['REQUEST_METHOD']==='GET'){
+            if(strlen(trim($id))===0){
+                header('location: ' . App::config('url') . 'index/logout');
+                return;
+            }
+
+            $id=(int)$id;
+            if($id===0){
+                header('location: ' . App::config('url') . 'index/logout');
+                return;
+            }
+
+            $this->e = Operator::readOne($id);
+
+            if($this->e==null){
+                header('location: ' . App::config('url') . 'index/logout');
+                return;
+            }
+
+
+            $this->view->render($this->viewPath . 
+            'change',[
+                'e'=>$this->e,
+                'message'=>''
+            ]);  
+            return;
+        }
+
+        // ovdje je POST
+        $this->prepareView();
+        if(!$this->controllChange()){// kontrolirati podatke, ako nešto ne valja vratiti na view s porukom 
+            $this->view->render($this->viewPath . 
+            'change',[
+                'e'=>$this->e,
+                'message'=>$this->message
+            ]);  
+         return;
+        }
+
+        $this->e->id=$id;
+        $this->prepareBase(); // priprema za bazu
+        Operator::update((array)$this->e);
+        $this->view->render($this->viewPath . 
+        'change',[
+            'e'=>$this->e,
+            'message'=>'Succesfully updated'
+        ]);  
+
+    }
+
+
+   public function delete($id=0)
+   {
+        $id=(int)$id;
+        if($id===0){
+            header('location: ' . App::config('url') . 'index/logout');
+            return;
+        }
+        Operator::delete($id);
+        header('location: ' . App::config('url') . 'operator/index');
+    }
+   
+
+
+
+   private function controllChange()
+   {
+       return $this->controllName() && $this->controllPassword() ;
+   }
+
+
+   private function prepareBase()
+   {
+        
+   }
+
+
+
+
+
     private function controllNew()
     {
-        return $this->controllName();
+        return $this->controllName() && $this->controllPassword() && $this->controllSameEmail();
     }
 
     private function callView($parameters)
@@ -71,12 +156,6 @@ class OperatorController extends AdminController
             return false;
         }
 
-
-        if(Operator::sameName($s)){
-            $this->message='Name already exists in base';
-            return false; 
-        }
-
         return true;
     }
 
@@ -88,7 +167,7 @@ class OperatorController extends AdminController
         $e->surname='';
         $e->email='';
         $e->role='';
-        $e->customer='';
+        $e->password='';
         return $e;
     }
 
@@ -104,5 +183,66 @@ class OperatorController extends AdminController
         }
         return $operators;
     }
+
+
+    private function controllPassword()
+    {
+        $pw = $this->e->password;
+        $pww = $this->e->confirmpw;
+
+        if(strlen(trim($pw))===0)
+        {
+            $this->message='Password mandatory!';
+            return false;
+        }
+        if(strlen(trim($pww))===0)
+        {
+            $this->message='Confirm Password mandatory!';
+            return false;
+        }
+
+        if(strlen(trim($pw))>50)
+        {
+            $this->message='Password can not be longer than 50 chars!';
+            return false;
+        }
+        if(strlen(trim($pww))>50)
+        {
+            $this->message='Password can not be longer than 50 chars!';
+            return false;
+        }
+        if(strlen(trim($pw))<8)
+        {
+            $this->message='Password cannot be shorter than 8 chars!';
+            return false;
+        }
+        if(strlen(trim($pww))<8)
+        {
+            $this->message='Password cannot be shorter than 8 chars!';
+            return false;
+        }
+
+        if(!($pw===$pww))
+        {
+            $this->message='Password does not match!';
+            return false;
+        }
+
+        return true;
+    }
+
+    private function controllSameEmail($id='')
+    {
+        if(Operator::sameEmail($this->e->email,$id))
+        {
+            $this->message='Email already exists';
+            return false;
+        }
+        return true;
+    }
+
+    
+
+
 
 }

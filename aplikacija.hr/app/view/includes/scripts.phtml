@@ -1,2 +1,6 @@
 
 <script src="<?=App::config('url')?>public/js/bootstrap.bundle.js"></script>
+<?php if(isset($js)):
+    ?>
+    <script src="<?php echo App::config('url') . 'public/js/' . $js?>"></script>
+<?php endif; ?>

@@ -2,11 +2,60 @@
 
 class Product{
     
-    public static function read()
+    public static function read($condition='',$page=1)
+    {
+        $condition='%' . $condition . '%';
+        $brps = App::config('brps');
+        $start = ($page * $brps) - $brps;
+
+        $conection = DB::getInstance();
+        $expression = $conection->prepare('
+        select 	a.id,
+                a.name,
+                a.color,
+                a.price,
+                a.customer,
+                count(b.id)as cycles
+        from product a
+        left join `cycle` b on a.id = b.product 
+        where a.name
+        like :condition
+        group by a.id,
+                a.name,
+                a.color,
+                a.price,
+                a.customer
+        order by a.name asc
+        limit :start, :brps
+        ');
+        $expression->bindValue('start',$start,PDO::PARAM_INT);
+        $expression->bindValue('brps',$brps,PDO::PARAM_INT);
+        $expression->bindParam('condition',$condition);
+
+        $expression->execute();
+        return $expression->fetchAll();
+    }
+
+    public static function readf()
     {
         $conection = DB::getInstance();
         $expression = $conection->prepare('
-        select * from product order by name asc');
+        select 	a.id,
+                a.name,
+                a.color,
+                a.price,
+                a.customer,
+                count(b.id)as cycles
+        from product a
+        left join `cycle` b on a.id = b.product 
+        group by a.id,
+                a.name,
+                a.color,
+                a.price,
+                a.customer
+        order by a.name asc
+        ');
+
         $expression->execute();
         return $expression->fetchAll();
     }
@@ -16,8 +65,14 @@ class Product{
         $conection = DB::getInstance();
         $expression = $conection->prepare('
         
-            select * from product
+            select 	a.id,
+                    a.name,
+                    a.color,
+                    a.price,
+                    a.customer
+            from product a
             where id=:id
+            order by a.name asc;
         
         ');
         $expression->execute([
@@ -84,6 +139,39 @@ class Product{
             'id'=>$id
         ]);
         $expression->execute();
+    }
+
+    public static function firstProduct()
+    {
+        $conection = DB::getInstance();
+        $expression = $conection->prepare('
+        
+            select id from product
+            order by id limit 1
+        
+        ');
+        $expression->execute();
+        $id=$expression->fetchColumn();
+        return $id;
+    }
+
+    public static function totalProducts($condition='')
+    {
+
+        $condition = '%' . $condition . '%';
+        $conection = DB::getInstance();
+        $expression = $conection->prepare('
+        
+        select 	count(*)
+        from product 
+        where name
+        like :condition;
+        
+        ');
+        $expression->execute([
+            'condition'=>$condition
+        ]);
+        return $expression->fetchColumn();
     }
     
 }

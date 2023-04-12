@@ -1,8 +1,9 @@
 <?php
 if(!isset($email)) {$email='';}
+if(isset($e->password)) {$e->password='';}
 if(!isset($e->confirmpw)) {$e->confirmpw='';}
 ?>
-<legend>Insert New Operator</legend>
+<legend>Update Operator</legend>
 
 <form action="" method="post">
     
@@ -38,7 +39,7 @@ if(!isset($e->confirmpw)) {$e->confirmpw='';}
         <label for="admin">Administrator</label>
         
         <input type="radio" class="form-check form-check-inline" name="role" id="oper" value="oper"
-        <?php if(!$e->role) echo 'checked="checked"'; ?>>
+        <?php if(!$e->role) echo 'checked="checked"'; ?>checked>
         <label for="oper">Operator</label>
         
     </div>
@@ -49,7 +50,7 @@ if(!isset($e->confirmpw)) {$e->confirmpw='';}
 
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-    Add Operator
+    Update Operator
     </button>
 
     <a href="<?=App::config('url')?>operator/index">

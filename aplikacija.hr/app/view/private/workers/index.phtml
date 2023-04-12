@@ -1,26 +1,44 @@
 <h3 class="display-3">Employees</h3>
-<a href="new"><button type="button" class="btn btn-outline-primary btn-lg">Add new employee</button></a>
+<a href="<?=App::config('url')?>worker/new"><button type="button" class="btn btn-outline-primary btn-lg">Add new employee</button></a>
 <br>
 ***
+<div class="mb-3 row" style="max-width:600px; margin: auto;">
+  <form action="" method="get">
+      <input class="form-control" type="text" name="condition" id="condition"
+      placeholder="Name, Surname or OIB"
+      value="<?=$condition?>" >
+  </form>
+</div>
 <hr>
 
-<div class="row">
-<?php foreach($data as $d): ?>
-  <div class="col-lg-3">
-    <div class="card">
-      <div class="card-body">
-            <h2><?=$d->name?></h2>
-            <h2><?=$d->surname?></h2>
-            <h5>Shift: <?=$d->shift?></h5>
-            <h5>OIB: <?=$d->oib?></h5>
-            <h5>Contract: <?=$d->contractnumber?></h5>
-            <h5>IBAN: <?=$d->iban?></h5>
 
-            <a href="<?=App::config('url')?>worker/change/<?=$d->id?>"><i class="bi bi-pencil-square"></i></a>
-            <a onclick="return confirm('Delete employee <?=$d->name?> <?=$d->surname?>?');"
-            href="<?=App::config('url')?>worker/delete/<?=$d->id?>"><i class="bi bi-trash3-fill"></i></a>
+<?php include 'pagination.phtml' ?>
+
+
+<div class="row justify-content-md-center">
+  <?php foreach($data as $d): ?>
+    <div class="col-lg-3">
+      <div class="card">
+        <div class="card-body">
+              <h2><?=$d->name?></h2>
+              <h2><?=$d->surname?></h2>
+              <h5>Shift: <?=$d->shift?></h5>
+              <h5>OIB: <?=$d->oib?></h5>
+              <h5>Contract: <?=$d->contractnumber?></h5>
+              <h5>IBAN: <?=$d->iban?></h5>
+
+              <a href="<?=App::config('url')?>worker/change/<?=$d->id?>"><i class="bi bi-pencil-square"></i></a>
+              <?php if($d->cycles==0): ?>
+                <a onclick="return confirm('Delete employee <?=$d->name?> <?=$d->surname?>?');"
+                href="<?=App::config('url')?>worker/delete/<?=$d->id?>"><i class="bi bi-trash3-fill"></i></a>
+              <?php else: ?>
+                <i title="Can not delete - Employed on Cycle" class="bi bi-trash3-fill" style="color: gray"></i>
+              <?php endif; ?>
+          </div>
       </div>
     </div>
-  </div>
   <?php endforeach;?>
 </div>
+<br>
+
+<?php include 'pagination.phtml' ?>
