@@ -7,7 +7,7 @@ class CycleController extends AuthorizationController
     DIRECTORY_SEPARATOR . 'cycles' . 
     DIRECTORY_SEPARATOR;
     private $e; //start data
-    private $messages=[];
+    private $message='';
 
     public function __construct()
     {
@@ -41,7 +41,8 @@ class CycleController extends AuthorizationController
             'condition'=>$condition,
             'page'=>$page,
             'last'=>$last,
-            'css'=>'cycle.css'
+            'css'=>'cycle.css',
+            'message'=>$this->message
         ]);
     }
 
@@ -71,10 +72,8 @@ class CycleController extends AuthorizationController
     {
         $e=Cycle::readOne($id);
 
-        if($e->amount=='' || 
-        $e->amount==0 ){
+        if($e->amount=='' || $e->amount==0 ){
             Cycle::delete($e->id);
-            
         }
         header('location: ' . App::config('url') . 'cycle');
 
@@ -82,6 +81,13 @@ class CycleController extends AuthorizationController
 
     public function change($id='')
     {
+        if($_SERVER['REQUEST_METHOD']==='GET'){
+            if(strlen(trim($id))===0){
+                header('location: ' . App::config('url') . 'index/logout');
+                return;
+            } 
+        }
+
         if($_SERVER['REQUEST_METHOD']==='GET'){
             $this->change_GET($id);
             return;
@@ -99,7 +105,9 @@ class CycleController extends AuthorizationController
            } catch (\Exception $th) {
             $this->view->render($this->viewPath .
             'details',[
-                'messages'=>$this->messages,
+                'message'=>$this->message,
+                'products'=>Product::readf(),
+                'workers'=>Worker::readf(),
                 'e'=>$this->e
             ]);
         }        
@@ -117,27 +125,14 @@ class CycleController extends AuthorizationController
         foreach(Product::read() as $product){
         $products[]=$product;
        }
-        /*
-       $this->e = Cycle::readOne($id);
-        $workers = [];
-        $p = new stdClass();
-        $p->id=0;
-        $p->name='Select';
-        $p->surname='';
-        $workers[]=$p;
-        foreach(Worker::read() as $worker){
-        $workers[]=$worker;
-       }
-        */
-       if($this->e->date!=null){
-        $this->e->date = date('Y-m-d',strtotime($this->e->date));
-       }
+        
+       
 
        $this->view->render($this->viewPath. 
        'details',[
            'e'=>$this->e,
+           'message'=>'',
            'products'=>Product::readf(),
-           //'products'=>$products,
            'workers'=>Worker::readf()
        ]); 
     }
@@ -156,16 +151,39 @@ class CycleController extends AuthorizationController
 
     public function prepareBase()
     {
-        if($this->e->amount==0){
+        if($this->e->amount==''){
             $this->e->amount=null;
         }
     }
 
     public function controll()
     {
-
+        $this->controllAmount();
+        $this->controllDate();
     }
 
+    private function controllAmount()
+    {
+        
+        $e = $this->e->amount;
+        if(strlen(trim($e))===0 || strlen(trim($e))=='' || strlen(trim($e))==0){
+            $this->message='Amount mandatory';
+            throw new Exception();
+        }
+        
+    }
+
+    private function controllDate()
+    {
+        
+
+        $e = $this->e->date;
+        if(strlen(trim($e))===0 || strlen(trim($e))=='' || strlen(trim($e))==null){
+            $this->message='Date mandatory';
+            throw new Exception();
+        }
+        
+    }
 
 
     private function adjustData($cycle)
@@ -177,6 +195,11 @@ class CycleController extends AuthorizationController
             }else{
                 $c->date=date('d.m.Y' , strtotime($c->date));
             }
+
+            if($c->amount==null || $c->amount==0){
+                $c->amount = '-';
+            }
+            
             
         }
         return $cycle;

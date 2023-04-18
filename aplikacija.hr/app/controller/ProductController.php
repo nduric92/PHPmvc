@@ -198,12 +198,12 @@ class ProductController extends AuthorizationController
 
         $price = $this->nf->parse($this->e->price);        
         if(!$price){
-            $this->message='The price is not in good format (xx.xx)';
+            $this->message='The price is not in good format (xx,xx)';
             return false;
         }
 
         if($price<=0){
-            $this->message='Price has to be higher than zero';
+            $this->message='Price has to be higher than 0';
             return false;  
         }
 
@@ -239,6 +239,10 @@ class ProductController extends AuthorizationController
             $p->title=$p->customer;
             if($p->customer==null){
                 $p->customer = 'Not set';
+            }
+            $p->title=$p->color;
+            if($p->color==null){
+                $p->color = 'Color - Not set';
             }
         }
         return $products;
