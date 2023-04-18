@@ -48,7 +48,7 @@ if(!isset($e->confirmpw)) {$e->confirmpw='';}
     <?=$message?><br>
 
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    <button type="submit" class="btn btn-outline-success"  data-bs-target="#staticBackdrop">
     Add Operator
     </button>
 
@@ -56,23 +56,5 @@ if(!isset($e->confirmpw)) {$e->confirmpw='';}
     <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
     Abort
     </button></a>
-
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Operator</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Save changes!
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
     
 </form>
