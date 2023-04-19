@@ -198,11 +198,11 @@ class ProductController extends AuthorizationController
 
         $price = $this->nf->parse($this->e->price);        
         if(!$price){
-            $this->message='The price is not in good format (xx,xx)';
+            $this->message='The price has to be higher than 0 or is not in good format (xx,xx)';
             return false;
         }
 
-        if($price<=0){
+        if($price<1){
             $this->message='Price has to be higher than 0';
             return false;  
         }
