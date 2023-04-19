@@ -98,14 +98,16 @@ class WorkerController extends AdminController
 
         try {
             $this->e->id=$id;
-            
+            $this->controll();
             $this->prepareBase();
             Worker::update((array)$this->e);
             header('location:' . App::config('url') . 'worker');
            } catch (\Exception $th) {
             $this->view->render($this->viewPath .
             'details',[
-                'e'=>$this->e
+                'message'=>$this->message,
+                'e'=>$this->e,
+                'shifts'=>Shift::read()
             ]);
         } 
 
@@ -129,8 +131,9 @@ class WorkerController extends AdminController
 
        $this->view->render($this->viewPath. 
        'details',[
-           'e'=>$this->e,
-           'shifts'=>Shift::read()
+        'e'=>$this->e,
+        'message'=>'',
+        'shifts'=>Shift::read()
        ]); 
     }
 
@@ -161,11 +164,7 @@ class WorkerController extends AdminController
     {
         $this->e = (object)$_POST;
     }
-
-    private function controllNew()
-    {
-        return $this->controllName() && $this->controllSurname();
-    }
+    
 
     private function controllName()
     {
@@ -173,15 +172,15 @@ class WorkerController extends AdminController
         $e = $this->e->name;
         if(strlen(trim($e))===0){
             $this->message='Name mandatory';
-            return false;
+            throw new Exception();
         }
 
         if(strlen(trim($e))>50){
             $this->message='The name must be less than 50 characters';
-            return false;
+            throw new Exception();
         }
 
-        return true;
+        
     }
 
     private function controllSurname()
@@ -190,30 +189,21 @@ class WorkerController extends AdminController
         $s = $this->e->surname;
         if(strlen(trim($s))===0){
             $this->message='Surname mandatory';
-            return false;
+            throw new Exception();
         }
 
         if(strlen(trim($s))>50){
             $this->message='Surname must be less than 50 characters';
-            return false;
+            throw new Exception();
         }
 
-        return true;
+        
     }
 
     private function prepareBase()
     {
         
     }
-
-    
-
-
-    private function controllChange()
-    {
-        return $this->controllName() && $this->controllSurname();        
-    }
-
     
 
     private function adjustData($workers)
@@ -244,7 +234,8 @@ class WorkerController extends AdminController
 
     public function controll()
     {
-        return $this->controllName() && $this->controllSurname();
+        $this->controllName(); 
+        $this->controllSurname();
     }
 
 }

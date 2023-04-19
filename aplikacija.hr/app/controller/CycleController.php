@@ -141,19 +141,14 @@ class CycleController extends AuthorizationController
 
     public function prepareView()
     {
-        
+        $this->e = (object)$_POST;
     }
 
-    public function controllNew()
-    {
-        
-    }
+    
 
     public function prepareBase()
     {
-        if($this->e->amount==''){
-            $this->e->amount=null;
-        }
+        
     }
 
     public function controll()
@@ -166,10 +161,12 @@ class CycleController extends AuthorizationController
     {
         
         $e = $this->e->amount;
-        if(strlen(trim($e))===0 || strlen(trim($e))=='' || strlen(trim($e))==0){
+        if(strlen(trim($e))==0){
             $this->message='Amount mandatory';
             throw new Exception();
         }
+        
+        
         
     }
 
@@ -178,7 +175,7 @@ class CycleController extends AuthorizationController
         
 
         $e = $this->e->date;
-        if(strlen(trim($e))===0 || strlen(trim($e))=='' || strlen(trim($e))==null){
+        if(strlen(trim($e))===0 || strlen(trim($e))==''){
             $this->message='Date mandatory';
             throw new Exception();
         }
