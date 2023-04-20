@@ -94,7 +94,6 @@ class OperatorController extends AdminController
             'e'=>$this->e,
             'message'=>'Succesfully updated'
         ]);  
-
     }
 
 
@@ -108,8 +107,6 @@ class OperatorController extends AdminController
         Operator::delete($id);
         header('location: ' . App::config('url') . 'operator/index');
     }
-   
-
 
 
    private function controllChange()
@@ -124,12 +121,9 @@ class OperatorController extends AdminController
    }
 
 
-
-
-
     private function controllNew()
     {
-        return $this->controllName() && $this->controllPassword() && $this->controllSameEmail();
+        return $this->controllName() && $this->controllSurname() && $this->controllPassword() && $this->controllSameEmail();
     }
 
     private function callView($parameters)
@@ -153,6 +147,22 @@ class OperatorController extends AdminController
 
         if(strlen(trim($s))>50){
             $this->message='The name must be less than 50 characters';
+            return false;
+        }
+
+        return true;
+    }
+
+    private function controllSurname()
+    {
+        $s = $this->e->surname;
+        if(strlen(trim($s))===0){
+            $this->message='Surname mandatory';
+            return false;
+        }
+
+        if(strlen(trim($s))>50){
+            $this->message='Surname must be less than 50 characters';
             return false;
         }
 
