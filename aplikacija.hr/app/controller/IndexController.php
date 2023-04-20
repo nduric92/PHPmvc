@@ -17,6 +17,11 @@ class IndexController extends Controller
         $this->view->render('aboutus');
     }
 
+    public function aboutapp()
+    {
+        $this->view->render('aboutapp');
+    }
+
     public function login()
     {
         $this->view->render('login',[
