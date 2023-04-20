@@ -111,7 +111,7 @@ class OperatorController extends AdminController
 
    private function controllChange()
    {
-       return $this->controllName() && $this->controllPassword() ;
+       return $this->controllName() && $this->controllSurname() && $this->controllEmail() && $this->controllPassword();
    }
 
 
@@ -123,7 +123,7 @@ class OperatorController extends AdminController
 
     private function controllNew()
     {
-        return $this->controllName() && $this->controllSurname() && $this->controllPassword() && $this->controllSameEmail();
+        return $this->controllName() && $this->controllSurname() && $this->controllEmail() && $this->controllSameEmail() && $this->controllPassword();
     }
 
     private function callView($parameters)
@@ -152,6 +152,23 @@ class OperatorController extends AdminController
 
         return true;
     }
+
+    private function controllEmail()
+    {
+        $s = $this->e->email;
+        if(strlen(trim($s))===0){
+            $this->message='Email mandatory';
+            return false;
+        }
+
+        if(strlen(trim($s))>50){
+            $this->message='Email must be less than 50 characters';
+            return false;
+        }
+
+        return true;
+    }
+
 
     private function controllSurname()
     {
